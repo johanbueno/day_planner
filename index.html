@@ -31,43 +31,140 @@
     </header>
     <div class="container">
         <div class="row">
-            <div class="col-md-2">
+            <div id="time" class="col-md-2">
 
             </div>
-            <div class="col-md-8" id="displayPlanner">
+            <div class="col-md-8  todos" id="displayPlanner">
 
             </div>
-            <div class="col-md-2">
+            <div id="btnSave"  class="col-md-2">
 
             </div>
+            
         </div>
       <!-- Timeblocks go here -->
     </div>
 
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
-    <!-- <script src="moment.js"> </script> -->
-    <!-- <script src="moment-timezone-with-data.js"></script> -->
+
+
     <script>
     var h = new Date()
    $('#hour').append(h.getHours());
 
    var currentTime = moment().format('MMMM Do YYYY, h:mm:ss a');
    $('#currentDay').append(currentTime);
-   var values = [9,10,11,12,1,2,3,4,5];
-   renderIndex();
+   var values = [9,10,11,12,13,14,15,16,17];
    
-  function renderIndex (){
+   renderInputs();
+   
+  function renderInputs (){
       $('#displayPlanner').empty();
       for (var i = 0; i < 9; i++){
-          var index = $('<input>');
-          index.attr("type","text");
-          index.attr("data-value",values[i]);
-          index.text((values[i]).toString());
-          $('#displayPlanner').append(index);
+          var inputs = $('<input>');
+          var time = $('<div>');
+            time.attr("data-value",values[i]);
+            time.val(inputs[i]);
+            time.text(values[i]);
+            time.addClass("hour")
+          inputs.attr("type","text");
+          inputs.attr("data-value",values[i]);
+          inputs.text(values[i]);
+         
+          $('#displayPlanner').append(inputs);
+          $('#time').append(time);
+          console.log(inputs.text(values[i]));
+          console.log(($('.input').text(values[i])));
+    
+
+          if ($('.input').text(values[i])< h){
+            $('.input').addClass("past");
+            
+          }
+          else if (inputs.text(values[i]) === h) {
+            inputs.addClass("present");
+          }
+          else (inputs.text(values[i])> h ); {
+            inputs.addClass("future");
+          }
+         
+       
       }
-      
+      renderButtons ();
   }
+
+  function renderButtons (){
+    for (var i = 0; i < 9; i++){
+      var btn = $('<button>');
+      btn.addClass("saveBtn");
+      btn.addClass("saveBtn i:hover");
+      btn.addClass("far fa-save");
+      $('#btnSave').append(btn);
+    }
+
+  }
+  // STORAGE ON INPUT
+var todos = [];
+init();
+var btn = $('#btnSave');
+displayPlanner = $("#displayPlanner");
+
+function renderTodos(){
+  displayPlanner.innerHTML = "";
+  for (var i = 0;i < todos.lenght;i++){
+    var todo = todos[i];
+    var userEntry = $('<input>');
+    userEntry.attr("type","text");
+    userEntry.attr("data-value",i);
+    displayPlanner.appendChild(userEntry);
+  }
+}
+
+function init() {
+  var storedTodos = JSON.parse(localStorage.getItem("todos"));
+
+  if (storedTodos !== null){
+    todos = storedTodos;
+  }
+  renderTodos()
+}
+function storeTodos() {
+  localStorage.setItem("todos", JSON.stringify(todos));
+}
+displayPlanner.addEventListener("submit", function(event) {
+  event.preventDefault();
+
+  var todoText = userEntry.value.trim();
+
+  // Return from function early if submitted todoText is blank
+  if (todoText === "") {
+    return;
+  }
+
+  // Add new todoText to todos array
+  todos.push(todoText);
+
+
+  // Store updated todos in localStorage, re-render the list
+  storeTodos();
+  renderTodos();
+});
+btn.addEventListener("click",function(event){
+  var element = event.target;
+
+
+  if (element.matches("button") === true) {
+    // Get its data-index value and remove the todo element from the list
+    var index = element.parentElement.getAttribute("data-value");
+    todos.splice(index, 1);
+
+    // Store updated todos in localStorage, re-render the list
+    storeTodos();
+    renderTodos();
+  }
+});
+
     </script>
   </body>
 </html>
