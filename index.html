@@ -1,174 +1,152 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <link
-      rel="stylesheet"
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
-      integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf"
-      crossorigin="anonymous"
-    />
-    <link
-      href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="style.css" />
-    <title>Work Day Scheduler</title>
-  </head>
 
-  <body>
-    <header class="jumbotron">
-      <h1 class="display-3">Work Day Scheduler</h1>
-      <p class="lead">A simple calendar app for scheduling your work day</p>
-      <p id="currentDay" class="lead"></p>
-      <p id="hour" class="lead"> </p>
-    </header>
-    <div class="container">
-        <div class="row">
-            <div id="time" class="col-md-2">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+    integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous" />
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <title>Work Day Scheduler</title>
+</head>
 
-            </div>
-            <div class="col-md-8  todos" id="displayPlanner">
+<body>
+  <header class="jumbotron">
+    <h1 class="display-3">Work Day Scheduler</h1>
+    <p class="lead">A simple calendar app for scheduling your work day</p>
+    <p id="currentDay" class="lead"></p>
+    <p id="hour" class="lead"> </p>
+  </header>
+  <div class="container">
+    <div class="row">
+      <div id="time" class="col-md-2">
 
-            </div>
-            <div id="btnSave"  class="col-md-2">
+      </div>
+      <div class="col-md-8  todos" method="POST" id="displayPlanner">
 
-            </div>
-            
-        </div>
-      <!-- Timeblocks go here -->
+      </div>
+      <div id="btnSave" class="col-md-2">
+
+      </div>
+
     </div>
+    <!-- Timeblocks go here -->
+  </div>
 
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
 
 
-    <script>
+  <script>
     var h = new Date()
-   $('#hour').append(h.getHours());
+    var hours = "14";
+    // h.getHours();
+    $('#hour').append(h.getHours());
 
-   var currentTime = moment().format('MMMM Do YYYY, h:mm:ss a');
-   $('#currentDay').append(currentTime);
-   var values = [9,10,11,12,13,14,15,16,17];
-   
-   renderInputs();
-   
-  function renderInputs (){
+    var currentTime = moment().format('MMMM Do YYYY, h:mm:ss a');
+    $('#currentDay').append(currentTime);
+    var values = ["9am", "10am", "11am", "12pm ", "1pm", "2pm", "3pm", "4pm", "5pm"];
+    var militaryT = [9, 10, 11, 12, 13, 14, 15, 16, 17];
+    renderInputs();
+
+
+    function renderInputs() {
       $('#displayPlanner').empty();
-      for (var i = 0; i < 9; i++){
-          var inputs = $('<input>');
-          var time = $('<div>');
-            time.attr("data-value",values[i]);
-            time.val(inputs[i]);
-            time.text(values[i]);
-            time.addClass("hour")
-          inputs.attr("type","text");
-          inputs.attr("data-value",values[i]);
-          inputs.text(values[i]);
-         
-          $('#displayPlanner').append(inputs);
-          $('#time').append(time);
-          console.log(inputs.text(values[i]));
-          console.log(($('.input').text(values[i])));
-    
+      for (var i = 0; i < 9; i++) {
+        var inputs = $('<input>');
+        var time = $('<div>');
+        time.attr("data-value", values[i]);
+        time.text(values[i]);
+        time.addClass("hour")
+        inputs.attr("type", "text");
+        inputs.attr("data-value", militaryT[i]);
+        inputs.attr("method", "GET")
+        inputs.addClass("userEntry");
+        inputs.text(militaryT[i]);
 
-          if ($('.input').text(values[i])< h){
-            $('.input').addClass("past");
-            
-          }
-          else if (inputs.text(values[i]) === h) {
-            inputs.addClass("present");
-          }
-          else (inputs.text(values[i])> h ); {
-            inputs.addClass("future");
-          }
-         
-       
+        $('#displayPlanner').append(inputs);
+        $('#time').append(time);
+        // call classes function for inputs
+
+
+        console.log(inputs.text(militaryT[i].value));
+        // console.log(($('.input').text(values[i])));
+
+        renderButtons();
+        classes();
+
+
       }
-      renderButtons ();
-  }
+      function classes() {
 
-  function renderButtons (){
-    for (var i = 0; i < 9; i++){
-      var btn = $('<button>');
-      btn.addClass("saveBtn");
-      btn.addClass("saveBtn i:hover");
-      btn.addClass("far fa-save");
-      $('#btnSave').append(btn);
+        if ((inputs.text(militaryT[i]) > hours)) {
+          inputs.addClass("future");
+
+        }
+        else if ((inputs.text(militaryT[i])) === hours) {
+          inputs.addClass("present");
+        }
+        else ((inputs.text(militaryT[i])) < hours); {
+          inputs.addClass("past");
+        }
+      }
     }
 
-  }
-  // STORAGE ON INPUT
-var todos = [];
-init();
-var btn = $('#btnSave');
-displayPlanner = $("#displayPlanner");
+    function renderButtons() {
+      $('#btnSave').empty();
+      for (var i = 0; i < 9; i++) {
+        var btn = $('<button>');
+        btn.addClass("saveBtn");
+        btn.addClass("saveBtn i:hover");
+        btn.addClass("far fa-save");
+        $('#btnSave').append(btn);
+      }
 
-function renderTodos(){
-  displayPlanner.innerHTML = "";
-  for (var i = 0;i < todos.lenght;i++){
-    var todo = todos[i];
-    var userEntry = $('<input>');
-    userEntry.attr("type","text");
-    userEntry.attr("data-value",i);
-    displayPlanner.appendChild(userEntry);
-  }
-}
+    }
+    // STORAGE ON INPUT
 
-function init() {
-  var storedTodos = JSON.parse(localStorage.getItem("todos"));
+    var btn = $('#btnSave');
+    displayPlanner = $("#displayPlanner");
 
-  if (storedTodos !== null){
-    todos = storedTodos;
-  }
-  renderTodos()
-}
-function storeTodos() {
-  localStorage.setItem("todos", JSON.stringify(todos));
-}
-displayPlanner.addEventListener("submit", function(event) {
-  event.preventDefault();
+    btn.addEventListener("click", function (event) {
 
-  var todoText = userEntry.value.trim();
+      if (element.matches("button") === true) {
+        var cliclekItem = element.value;
+        result = parseInt(cliclekItem);
+        va = inputs[i].value;
+        storeTodos();
+      }
+    })
 
-  // Return from function early if submitted todoText is blank
-  if (todoText === "") {
-    return;
-  }
+      function storeTodos() {
+        localStorage.setItem(result, JSON.stringify(va));
 
-  // Add new todoText to todos array
-  todos.push(todoText);
+      }
+
+      function renderEntry() {
+        for (var i = 0; i < 9; i++) {
+
+          var str = (localStorage.getItem(i));
+
+          storedUserEntry = JSON.parse(str);
+          input[i].value = storedUserEntry;
+        }
 
 
-  // Store updated todos in localStorage, re-render the list
-  storeTodos();
-  renderTodos();
-});
-btn.addEventListener("click",function(event){
-  var element = event.target;
+
+      }
 
 
-  if (element.matches("button") === true) {
-    // Get its data-index value and remove the todo element from the list
-    var index = element.parentElement.getAttribute("data-value");
-    todos.splice(index, 1);
 
-    // Store updated todos in localStorage, re-render the list
-    storeTodos();
-    renderTodos();
-  }
-});
 
-    </script>
-  </body>
+
+
+
+
+  </script>
+</body>
+
 </html>
-
-   
-   
-  
